@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">MinePulse — Minecraft Server Monitor</title>
+  <meta name="description"
+    content="Real-time Minecraft server status tracker — monitor uptime, players, and server health at a glance." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Animated background particles -->
+  <div class="bg-particles" id="bgParticles"></div>
+
+  <!-- Floating grid overlay -->
+  <div class="grid-overlay"></div>
+
+  <!-- Announcement bar (shown when admin sets one) -->
+  <div class="announcement-bar" id="announcementBar" style="display:none">
+    <span id="announcementBarText"></span>
+    <button class="ann-close" id="annClose">✕</button>
+  </div>
+
+  <!-- Admin mode banner (maintenance/updating/restarting) -->
+  <div class="mode-banner" id="modeBanner" style="display:none">
+    <div class="mode-banner-inner">
+      <span class="mode-banner-icon" id="modeBannerIcon"></span>
+      <div>
+        <div class="mode-banner-title" id="modeBannerTitle"></div>
+        <div class="mode-banner-msg" id="modeBannerMsg"></div>
+        <div class="mode-banner-eta" id="modeBannerEta" style="display:none">
+          <!-- e.g. "Back in 28m 34s" -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon" id="logoIcon">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="10" height="10" fill="#4ade80" rx="1" />
+            <rect x="18" y="4" width="10" height="10" fill="#86efac" rx="1" />
+            <rect x="4" y="18" width="10" height="10" fill="#86efac" rx="1" />
+            <rect x="18" y="18" width="10" height="10" fill="#4ade80" rx="1" />
+            <rect x="10" y="10" width="12" height="12" fill="#22c55e" rx="1" />
+          </svg>
+        </div>
+        <span class="logo-text" id="logoText">MinePulse</span>
+      </div>
+      <div class="header-meta">
+        <div class="last-updated" id="lastUpdated">
+          <span class="dot pulse"></span>
+          <span id="lastUpdatedText">Connecting...</span>
+        </div>
+        <button class="refresh-btn" id="refreshBtn" title="Refresh Now">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+            <path d="M21 3v5h-5" />
+            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+            <path d="M8 16H3v5" />
+          </svg>
+        </button>
+        <a href="/admin" class="admin-link" title="Admin Panel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2z" />
+            <path d="M12 14c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- Server Identity Banner -->
+    <section class="server-banner" id="serverBanner">
+      <div class="banner-glow" id="bannerGlow"></div>
+      <div class="banner-content">
+        <div class="server-info-left">
+          <div class="server-address-block">
+            <span class="label">Server Address</span>
+            <span class="server-address" id="serverAddress">Loading...</span>
+          </div>
+          <div class="server-motd" id="serverMotd"></div>
+          <div class="server-version" id="serverVersion"></div>
+        </div>
+        <div class="status-badge-wrap">
+          <div class="status-badge" id="statusBadge">
+            <div class="status-badge-indicator" id="statusIndicator"></div>
+            <span class="status-badge-text" id="statusText">Checking...</span>
+          </div>
+          <!-- Admin mode chip — visible when mode ≠ online -->
+          <div class="mode-chip" id="modechip" style="display:none">
+            <span class="mode-chip-icon" id="modechipIcon"></span>
+            <span class="mode-chip-label" id="modechipLabel"></span>
+          </div>
+          <!-- ETA countdown chip — shown when an ETA is active -->
+          <div class="eta-chip" id="etaChip" style="display:none">
+            <span class="eta-chip-clock">
+              <!-- Animated clock SVG -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+            </span>
+            <span class="eta-chip-label" id="etaChipLabel">--:--</span>
+          </div>
+          <div class="status-since" id="statusSince"></div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Stats row -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon players-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Online Players</span>
+          <span class="stat-value" id="playerCount">—</span>
+          <span class="stat-sub" id="playerMax"></span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon uptime-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 6v6l4 2" />
+          </svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">24h Uptime</span>
+          <span class="stat-value" id="uptimePct">—</span>
+          <span class="stat-sub">last 24 hours</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon ping-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M2 12h3" />
+            <path d="M19 12h3" />
+            <path d="M6.34 6.34 4.93 4.93" />
+            <path d="M19.07 4.93l-1.41 1.41" />
+            <path d="M6.34 17.66l-1.41 1.41" />
+            <path d="M19.07 19.07l-1.41-1.41" />
+            <circle cx="12" cy="12" r="4" />
+          </svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Latency</span>
+          <span class="stat-value" id="latency">—</span>
+          <span class="stat-sub">milliseconds</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon duration-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="3" width="20" height="14" rx="2" />
+            <path d="M8 21h8" />
+            <path d="M12 17v4" />
+          </svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Current State</span>
+          <span class="stat-value" id="stateDuration">—</span>
+          <span class="stat-sub" id="stateDurationLabel">duration</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lower grid: Chart + Player list -->
+    <div class="lower-grid">
+
+      <!-- Uptime Heartbeat Chart (Uptime Kuma style) -->
+      <section class="card chart-card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+            <span>Uptime History</span>
+          </div>
+          <div class="chart-range-btns" id="rangeButtons">
+            <button class="range-btn active" data-hours="1">1h</button>
+            <button class="range-btn" data-hours="6">6h</button>
+            <button class="range-btn" data-hours="12">12h</button>
+            <button class="range-btn" data-hours="24">24h</button>
+          </div>
+        </div>
+
+        <!-- Uptime summary row -->
+        <div class="uptime-summary-row">
+          <div class="uptime-pct-block">
+            <span class="uptime-pct-label">Uptime</span>
+            <span class="uptime-pct-num" id="chartUptimePct">—</span>
+          </div>
+          <div class="uptime-legend">
+            <span class="legend-item"><span class="legend-dot online"></span>Online</span>
+            <span class="legend-item"><span class="legend-dot offline"></span>Offline</span>
+            <span class="legend-item"><span class="legend-dot crashed"></span>Crashed</span>
+          </div>
+          <div class="uptime-range-label" id="uptimeRangeLabel">Last 1 hour</div>
+        </div>
+
+        <!-- Heartbeat bars -->
+        <div class="heartbeat-wrap" id="heartbeatWrap">
+          <div class="heartbeat-bars" id="heartbeatBars">
+            <!-- filled by JS -->
+          </div>
+          <div class="heartbeat-empty" id="heartbeatEmpty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+            <p>Collecting data…</p>
+          </div>
+        </div>
+
+        <!-- Time axis labels -->
+        <div class="heartbeat-axis" id="heartbeatAxis">
+          <!-- filled by JS -->
+        </div>
+
+        <!-- Tooltip (shared, positioned by JS) -->
+        <div class="hb-tooltip" id="hbTooltip"></div>
+      </section>
+
+      <!-- Player List -->
+      <section class="card players-card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            <span>Player List</span>
+          </div>
+          <span class="player-count-badge" id="playerBadge">0</span>
+        </div>
+
+        <div class="player-list-wrap" id="playerListWrap">
+          <div class="player-list" id="playerList">
+            <div class="player-list-empty" id="playerListEmpty">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+              </svg>
+              <p>No players online</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+
+  </main>
+
+  <footer class="footer">
+    <p>MinePulse • Minecraft Server Monitor • Auto-refreshes every <span id="pollInterval">30</span>s</p>
+    <a href="https://github.com/AaronPhilips101/MinePulse" target="_blank" rel="noopener noreferrer"
+      class="footer-github" aria-label="MinePulse on GitHub">
+      <svg height="20" viewBox="0 0 16 16" width="20" aria-hidden="true" fill="currentColor">
+        <path
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+      </svg>
+      <span>AaronPhilips101/MinePulse</span>
+    </a>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

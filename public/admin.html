@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MinePulse Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="admin.css" />
+</head>
+
+<body>
+
+    <!-- Login screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="login-logo">
+                <svg viewBox="0 0 32 32" fill="none">
+                    <rect x="4" y="4" width="10" height="10" fill="#4ade80" rx="1" />
+                    <rect x="18" y="4" width="10" height="10" fill="#86efac" rx="1" />
+                    <rect x="4" y="18" width="10" height="10" fill="#86efac" rx="1" />
+                    <rect x="18" y="18" width="10" height="10" fill="#4ade80" rx="1" />
+                    <rect x="10" y="10" width="12" height="12" fill="#22c55e" rx="1" />
+                </svg>
+                <span>MinePulse <span class="admin-tag">Admin</span></span>
+            </div>
+            <p class="login-sub">Enter your admin password to continue</p>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="passwordInput">Password</label>
+                    <input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password" />
+                </div>
+                <div id="loginError" class="error-msg" style="display:none">Incorrect password</div>
+                <button type="submit" class="btn btn-primary" id="loginBtn">Sign In</button>
+            </form>
+            <a href="/" class="back-link">← Back to dashboard</a>
+        </div>
+    </div>
+
+    <!-- Admin dashboard (hidden until logged in) -->
+    <div id="adminDash" class="admin-dash" style="display:none">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <svg viewBox="0 0 32 32" fill="none">
+                    <rect x="4" y="4" width="10" height="10" fill="#4ade80" rx="1" />
+                    <rect x="18" y="4" width="10" height="10" fill="#86efac" rx="1" />
+                    <rect x="4" y="18" width="10" height="10" fill="#86efac" rx="1" />
+                    <rect x="18" y="18" width="10" height="10" fill="#4ade80" rx="1" />
+                    <rect x="10" y="10" width="12" height="12" fill="#22c55e" rx="1" />
+                </svg>
+                <div>
+                    <div class="sidebar-title">MinePulse</div>
+                    <div class="sidebar-sub">Admin Panel</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-tab="overview">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                    </svg>
+                    Overview
+                </button>
+                <button class="nav-btn" data-tab="server">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="2" y="3" width="20" height="5" rx="1" />
+                        <rect x="2" y="10" width="20" height="5" rx="1" />
+                        <rect x="2" y="17" width="20" height="5" rx="1" />
+                        <path d="M6 5.5h.01M6 12.5h.01M6 19.5h.01" />
+                    </svg>
+                    Server Config
+                </button>
+                <button class="nav-btn" data-tab="security">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    Security
+                </button>
+                <button class="nav-btn" data-tab="mode">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path
+                            d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    Server Mode
+                </button>
+                <button class="nav-btn" data-tab="announcement">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    Announcement
+                </button>
+                <button class="nav-btn" data-tab="logs">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                    </svg>
+                    Logs
+                </button>
+                <button class="nav-btn" data-tab="data">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <ellipse cx="12" cy="5" rx="9" ry="3" />
+                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+                    </svg>
+                    Data
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="/" class="sidebar-link">← Public Dashboard</a>
+                <button class="btn btn-danger-sm" id="logoutBtn">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="admin-main">
+
+            <!-- Toast notification -->
+            <div class="toast" id="toast"></div>
+
+            <!-- TAB: Overview -->
+            <section class="tab-panel active" id="tab-overview">
+                <div class="panel-header">
+                    <h1>Overview</h1>
+                    <span class="panel-sub">Live status at a glance</span>
+                </div>
+
+                <div class="overview-grid">
+                    <div class="ov-card">
+                        <div class="ov-label">Server Address</div>
+                        <div class="ov-value mono" id="ov-host">—</div>
+                    </div>
+                    <div class="ov-card">
+                        <div class="ov-label">Server Status</div>
+                        <div class="ov-value" id="ov-status">—</div>
+                    </div>
+                    <div class="ov-card">
+                        <div class="ov-label">Admin Mode</div>
+                        <div class="ov-value" id="ov-mode">—</div>
+                    </div>
+                    <div class="ov-card">
+                        <div class="ov-label">Players Online</div>
+                        <div class="ov-value" id="ov-players">—</div>
+                    </div>
+                    <div class="ov-card">
+                        <div class="ov-label">Latency</div>
+                        <div class="ov-value mono" id="ov-latency">—</div>
+                    </div>
+                    <div class="ov-card">
+                        <div class="ov-label">Last Checked</div>
+                        <div class="ov-value mono" id="ov-lastcheck">—</div>
+                    </div>
+                    <div class="ov-card" id="ov-eta-card" style="display:none">
+                        <div class="ov-label">ETA (Back Online)</div>
+                        <div class="ov-value mono eta-countdown" id="ov-eta">—</div>
+                    </div>
+                    <div class="ov-card">
+                        <div class="ov-label">Poll Interval</div>
+                        <div class="ov-value mono" id="ov-poll">—</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: Server Config -->
+            <section class="tab-panel" id="tab-server">
+                <div class="panel-header">
+                    <h1>Server Configuration</h1>
+                    <span class="panel-sub">Connection target, branding, and polling settings</span>
+                </div>
+
+                <div class="form-card" style="margin-bottom:1rem">
+                    <h3 class="section-title">Connection</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Server Host / IP</label>
+                            <input type="text" id="cfgHost" placeholder="play.example.com" />
+                            <span class="form-hint">Hostname or IP address (you can include :port here)</span>
+                        </div>
+                        <div class="form-group narrow">
+                            <label>Port</label>
+                            <input type="number" id="cfgPort" placeholder="25565" min="1" max="65535" />
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="saveServerBtn">Save &amp; Reconnect</button>
+                </div>
+
+                <div class="form-card" style="margin-bottom:1rem">
+                    <h3 class="section-title">Branding</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Website Name</label>
+                            <input type="text" id="cfgWebsiteName" placeholder="MinePulse" maxlength="50" />
+                            <span class="form-hint">The main title of the page</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Custom Display Name <span class="optional">(optional)</span></label>
+                            <input type="text" id="cfgCustomName" placeholder="e.g. SurvivalCraft" maxlength="80" />
+                            <span class="form-hint">Overrides the server name shown in the network address
+                                header.</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Website Icon (Logo) <span class="optional">(optional)</span></label>
+                        <input type="file" id="cfgWebsiteIcon" accept="image/png, image/jpeg"
+                            style="padding-top:6px;" />
+                        <span class="form-hint">Upload a custom logo to replace the default cube icon (PNG/JPG, max
+                            5MB).</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Fallback MOTD <span class="optional">(optional)</span></label>
+                        <input type="text" id="cfgFallbackMotd" placeholder="e.g. Welcome to BoomCraft!"
+                            maxlength="120" />
+                        <span class="form-hint">Shown under the server address when the Minecraft server doesn't
+                            broadcast a MOTD.</span>
+                    </div>
+                    <button class="btn btn-primary" id="saveBrandingBtn">Save Branding</button>
+                </div>
+
+                <div class="form-card" style="margin-bottom:1rem">
+                    <h3 class="section-title">Downtime Settings</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Offline Label</label>
+                            <input type="text" id="cfgOfflineLabel" placeholder="Offline" maxlength="30" />
+                        </div>
+                        <div class="form-group">
+                            <label>Crashed Label</label>
+                            <input type="text" id="cfgCrashedLabel" placeholder="Crashed" maxlength="30" />
+                        </div>
+                        <div class="form-group">
+                            <label>Crashed Timeout</label>
+                            <input type="number" id="cfgCrashedMinutes" placeholder="5" min="0" max="1440" />
+                            <span class="form-hint">Minutes offline before state becomes "Crashed". 0 disables crashed
+                                state entirely.</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="saveDowntimeBtn">Save Downtime Settings</button>
+                </div>
+
+                <div class="form-card">
+                    <h3 class="section-title">Polling Interval</h3>
+                    <p class="danger-desc" style="margin-bottom:1rem">How often the server checks the Minecraft server
+                        status.</p>
+                    <div class="eta-presets" style="margin-bottom:1rem">
+                        <button class="preset-btn" data-poll="15000">15s</button>
+                        <button class="preset-btn" data-poll="30000">30s</button>
+                        <button class="preset-btn" data-poll="60000">1m</button>
+                        <button class="preset-btn" data-poll="120000">2m</button>
+                        <button class="preset-btn" data-poll="300000">5m</button>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Current interval</label>
+                            <div class="ov-value mono" id="currentPollDisplay" style="font-size:1.1rem">30s</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: Security -->
+            <section class="tab-panel" id="tab-security">
+                <div class="panel-header">
+                    <h1>Security</h1>
+                    <span class="panel-sub">Change admin panel password</span>
+                </div>
+
+                <div class="form-card">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Current Password</label>
+                            <input type="password" id="cfgCurrentPassword" placeholder="Enter current password" />
+                        </div>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" id="cfgNewPassword" placeholder="Enter new password" />
+                        </div>
+                    </div>
+                    <button class="btn btn-danger-sm" id="savePasswordBtn" style="margin-top:0.5rem">Update
+                        Password</button>
+                </div>
+            </section>
+
+            <!-- TAB: Server Mode -->
+            <section class="tab-panel" id="tab-mode">
+                <div class="panel-header">
+                    <h1>Server Mode</h1>
+                    <span class="panel-sub">Display a status override on the public dashboard</span>
+                </div>
+
+                <div class="form-card">
+                    <div class="mode-grid" id="modeGrid">
+                        <button class="mode-btn active" data-mode="online">
+                            <span class="mode-icon">🟢</span>
+                            <span class="mode-label">Online</span>
+                            <span class="mode-desc">Normal operation</span>
+                        </button>
+                        <button class="mode-btn" data-mode="maintenance">
+                            <span class="mode-icon">🔧</span>
+                            <span class="mode-label">Maintenance</span>
+                            <span class="mode-desc">Under maintenance</span>
+                        </button>
+                        <button class="mode-btn" data-mode="updating">
+                            <span class="mode-icon">🔄</span>
+                            <span class="mode-label">Updating</span>
+                            <span class="mode-desc">Server update in progress</span>
+                        </button>
+                        <button class="mode-btn" data-mode="restarting">
+                            <span class="mode-icon">⚡</span>
+                            <span class="mode-label">Restarting</span>
+                            <span class="mode-desc">Server is restarting</span>
+                        </button>
+                    </div>
+
+                    <div class="form-group" style="margin-top:1.5rem">
+                        <label>Custom Mode Message <span class="optional">(optional)</span></label>
+                        <input type="text" id="modeMessage" placeholder="e.g. Back in ~30 minutes!" maxlength="200" />
+                        <span class="form-hint">Shown below the mode banner on the public page</span>
+                    </div>
+
+                    <!-- ETA section -->
+                    <div class="eta-section" id="etaSection">
+                        <label class="eta-label">
+                            <span>⏱️ ETA — Back Online In</span>
+                            <span class="optional" id="etaCurrentDisplay"></span>
+                        </label>
+                        <div class="eta-presets">
+                            <button class="preset-btn" data-eta="900">15 min</button>
+                            <button class="preset-btn" data-eta="1800">30 min</button>
+                            <button class="preset-btn" data-eta="3600">1 hour</button>
+                            <button class="preset-btn" data-eta="7200">2 hours</button>
+                            <button class="preset-btn" data-eta="14400">4 hours</button>
+                        </div>
+                        <div class="eta-custom-row">
+                            <input type="number" id="etaCustomMinutes" min="1" max="1440" placeholder="Custom minutes"
+                                style="width:160px" />
+                            <button class="btn btn-sm" id="setCustomEtaBtn">Set</button>
+                            <button class="btn btn-ghost" id="clearEtaBtn" style="font-size:0.8rem">Clear ETA</button>
+                        </div>
+                        <span class="form-hint">When the timer runs out the server will automatically switch back to
+                            Online mode.</span>
+                    </div>
+
+                    <button class="btn btn-primary" id="saveModeBtn" style="margin-top:1.25rem">Apply Mode</button>
+                </div>
+            </section>
+
+            <!-- TAB: Announcement -->
+            <section class="tab-panel" id="tab-announcement">
+                <div class="panel-header">
+                    <h1>Announcement Banner</h1>
+                    <span class="panel-sub">Show a message at the top of the public dashboard</span>
+                </div>
+
+                <div class="form-card">
+                    <div class="form-group">
+                        <label>Announcement Text</label>
+                        <textarea id="announcementText" rows="3"
+                            placeholder="e.g. New map dropping this weekend! Join our Discord for details."
+                            maxlength="500"></textarea>
+                        <span class="form-hint">Leave blank to hide the banner</span>
+                    </div>
+                    <div class="preview-block" id="announcementPreview" style="display:none">
+                        <span class="preview-label">Preview</span>
+                        <div class="announcement-preview-inner" id="announcementPreviewText"></div>
+                    </div>
+                    <div class="action-row">
+                        <button class="btn btn-primary" id="saveAnnouncementBtn">Save Announcement</button>
+                        <button class="btn btn-ghost" id="clearAnnouncementBtn">Clear</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: Logs -->
+            <section class="tab-panel" id="tab-logs">
+                <div class="panel-header">
+                    <h1>Server Logs</h1>
+                    <span class="panel-sub">Real-time poll and admin action log</span>
+                </div>
+
+                <div class="log-toolbar">
+                    <button class="btn btn-sm" id="refreshLogsBtn">↻ Refresh</button>
+                    <label class="checkbox-label"><input type="checkbox" id="autoRefreshLogs" checked />
+                        Auto-refresh</label>
+                    <span class="log-count" id="logCount"></span>
+                </div>
+                <div class="log-terminal" id="logTerminal">
+                    <div class="log-empty">Loading logs...</div>
+                </div>
+            </section>
+
+            <!-- TAB: Data -->
+            <section class="tab-panel" id="tab-data">
+                <div class="panel-header">
+                    <h1>Data Management</h1>
+                    <span class="panel-sub">Manage stored history and status data</span>
+                </div>
+
+                <div class="form-card danger-zone">
+                    <div class="danger-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path
+                                d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                            <line x1="12" y1="9" x2="12" y2="13" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                        <h3>Danger Zone</h3>
+                    </div>
+                    <p class="danger-desc">Clearing the history will remove all uptime data. The heartbeat chart will
+                        reset and rebuild from new polls. This cannot be undone.</p>
+                    <button class="btn btn-danger" id="clearHistoryBtn">Clear Status History</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+
+</html>

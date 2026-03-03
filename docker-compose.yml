@@ -1,0 +1,46 @@
+# MinePulse — Docker Compose
+
+# Named volume — managed by Docker, survives container restarts/removals.
+# Data is stored at /var/lib/docker/volumes/minepulse-data/
+# To inspect: docker run --rm -v minepulse-data:/data alpine cat /data/config.json
+volumes:
+  minepulse-data:
+
+
+services:
+  minepulse:
+    build: .
+    image: minepulse:latest
+    container_name: minepulse
+    ports:
+      - "3000:3000"
+    environment:
+      # --- Minecraft server to monitor ---
+      - MC_HOST=play.your-server.com
+      - MC_PORT=25565
+
+      # --- MinePulse settings ---
+      - PORT=3000
+      - POLL_INTERVAL=30000 # How often to poll the MC server (ms). Can also be changed live in Admin Panel.
+
+      # --- Security ---
+      # Set this to your public domain in production to restrict CORS.
+      # Example: https://status.your-domain.com
+      - ALLOWED_ORIGIN=http://localhost:3000
+      # Set NODE_ENV=production to enable Secure flag on the session cookie (requires HTTPS).
+      # - NODE_ENV=production
+
+    volumes:
+      # Named volume: Docker manages the location. Recommended for production.
+      - minepulse-data:/app/data
+      # Alternatively, use a bind mount if you want direct access to config.json:
+      # - ./data:/app/data
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: [ "CMD", "node", "-e", "require('http').get('http://localhost:3000/api/status', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
