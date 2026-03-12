@@ -2,9 +2,11 @@
 
 <img src="https://img.shields.io/badge/MinePulse-Minecraft%20Monitor-22c55e?style=for-the-badge&logo=minecraft&logoColor=white" alt="MinePulse" />
 
-# MinePulse 🟢
+# MinePulse 
 
 **A beautiful, real-time Minecraft server status monitor with a powerful admin panel.**
+
+
 
 [![Node.js](https://img.shields.io/badge/Node.js-20+-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
@@ -21,7 +23,9 @@ MinePulse is a self-hosted, real-time Minecraft server status monitor. It polls 
 
 An optional **password-protected Admin Panel** lets you manage everything without touching a config file: change the server target, customize branding, display maintenance banners with ETAs, post announcements, and more. All settings persist across restarts via an auto-generated `config.json`.
 
+
 ---
+<img width="1352" height="768" alt="image" src="https://github.com/user-attachments/assets/2934546f-e08b-4c31-b357-09dc75780f21" />
 
 ## ✨ Features
 
